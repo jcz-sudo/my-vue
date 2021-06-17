@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .container{
+      height: 2000px;
+    }
+    .container .img_item{
+      margin-bottom:200px;
+    }
+    .container .img_item img{
+      width: 100%;
+      height:500px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="img_item"><img data-src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic4.zhimg.com%2Fv2-285111e97deb27c67bfe83fc9ec1b7e2_1200x500.jpg&refer=http%3A%2F%2Fpic4.zhimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1626427884&t=1462ec2a5f30e234a4122e50843c75bd" alt=""></div>
+    <div class="img_item"><img data-src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2237470352,552559233&fm=26&gp=0.jpg" alt=""></div>
+    <div class="img_item"><img data-src="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3739140100,1697388464&fm=26&gp=0.jpg" alt=""></div>
+  </div>
+</body>
+<script>
+  /**
+   * window.innerHeight = document.docuementElement.clientHeight + 滚动条高度
+   * 如果没有滚动条高度，window.innerHeight = docuement.documentElement.clientHeight
+   * 真正可视区域的高度不包括滚动条
+   * document.docuemntElement.scrollHeight获取网页高度，包括被卷出部分
+  */
+  //加载网路图片
+  let imgs = document.querySelectorAll(".img_item img")
+  console.log(imgs)
+  let imgTop = []
+  //方案1：
+  //获取图片的位置，和window的innerHeight进行比较，监听滚动事件
+  // imgs.forEach(img=>{
+  //   // img.src = "./static/loading.png"
+  //   let res = img.getBoundingClientRect()
+  //   console.log(res.top,window.innerHeight)
+  //   if(res.top < window.innerHeight){
+  //     img.src = img.dataset.src
+  //   }
+  //   imgTop.push(res.top)
+  // })
+  // window.onscroll = function(){
+  //   imgs.forEach((img,index)=>{
+  //     if(window.innerHeight + document.documentElement.scrollTop >= imgTop[index]){
+  //         if(!imgs[index].src){
+  //           imgs[index].src = imgs[index].dataset.src
+  //         }
+        
+  //     }
+  //   })
+  // }
+
+
+  //方案2：window.IntersectionObserver
+  /**
+   * new IntersectionObserver获取observer实例，
+   * IntersectionObserver传入两个参数，callback,和options[可选参数]
+   * option参数：
+   * root所监听对象的具体祖先元素，未指定则默认顶级元素
+   * thresholds:一个阈值数组，每个阈值都是交叉区域和边界区域的比例，当监听对象的可视部分穿过阈值时就会指向指定的回调函数
+   * **/
+  let observer = new IntersectionObserver(function(entries){
+    console.log("observe回调函数执行",entries)
+    entries.forEach((el,ei)=>{
+      if(el.intersectionRatio <= 0) return
+      //加载图片
+      console.log(imgs)
+      el.target.src = el.target.dataset.src
+      //加载完图片停止观察
+      observer.unobserve(el.target)
+    })
+  })
+  imgs.forEach((img,ind)=>{
+    observer.observe(img)
+  })
+  //observer.observe:开始观察 observer.unobserve停止观察 observer.disconnect()关闭观察器
+ 
+</script>
+</html>
