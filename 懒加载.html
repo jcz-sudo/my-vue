@@ -82,6 +82,28 @@
     observer.observe(img)
   })
   //observer.observe:开始观察 observer.unobserve停止观察 observer.disconnect()关闭观察器
- 
+  function Group(arr,key){
+    if(!key){return {}}
+    return arr.reduce((t,v)=>{
+        if(t[v[key]]){
+           t[v[key]] += 1
+        }else{
+           t[v[key]] = 1
+        }
+        return t
+    },{})
+  }
+  var arr = [
+    { area: "GZ", name: "YZW", age: 27 },
+    { area: "GZ", name: "TYJ", age: 25 },
+    { area: "SZ", name: "AAA", age: 23 },
+    { area: "FS", name: "BBB", age: 21 },
+    { area: "SZ", name: "CCC", age: 19 }
+  ]; 
+  Group(arr,"area")
+
+  var obj = {a:1,b:2,c:3}
+  var result = Object.entries(obj)
+  console.log(result)
 </script>
 </html>

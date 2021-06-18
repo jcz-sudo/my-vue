@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+
+  <script>
+    /**
+     * callback函数写死
+     * ajax发送的请求会有同源策略的限制
+     * JSONP解决跨域：利用script的src属性值可以请求跨域资源，使用script发请求, 前端定义一个函数，后台返回函数调用的字符串
+    */
+    function getList(data){
+      console.log("接口请求返回的数据",data)
+
+    }
+  </script>
+  <script src="http://127.0.0.1:3000/list?callback=getList"></script>
+  
+  <script>
+    //callback函数动态
+    //创建script标签把请求地址放进去
+    function jsonp(url,callback){
+      //传递的callback动态,直接使用时间戳声明函数名
+      //先声明好timestamp函数，并执行对应的逻辑
+      let timestamp = `jsonp${new Date().getTime()}`
+      window[timestamp] = data => {
+        document.body.removeChild(script);
+        delete window[timestamp];  
+        callback && typeof callback === "function" && callback(data)
+      }
+      let script = document.createElement("script")
+      script.src = `${url}?callback=${timestamp}`
+      document.body.appendChild(script)
+    }
+    jsonp("http://127.0.0.1:3000/list",function(res){
+      console.log("callback函数执行结果",res)
+    })
+  </script>
+
+  <script>
+    //CORS:后台允许请求，前端正常进行请求
+    const xhr = new XMLHttpRequest()
+    xhr.open("get","http://127.0.0.1:3000/")
+    xhr.onreadystatechange = () => {
+      if (xhr.status === 200 && xhr.readyState === 4) {
+        console.log ("xhr请求的结果",xhr.responseText)
+      }
+    }
+    xhr.send()
+  </script>
+
+  <script>
+    //使用webpack代理请求
+    //再webpack.config.js配置
+    /**
+     *   devServer: {
+    port: '3000',
+    compress: true,
+    open: true,
+    hot: true,
+    proxy: {
+      '/': {
+        target: 'http://127.0.0.1:3001',
+        changeOrigin: true
+      }
+    }
+  },
+    再本地搭建node中间层发送请求，node中间层发起的请求不存在同源策略
+    */
+  </script>
+</body>
+</html>
+
