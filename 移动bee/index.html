@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>移动的蜜蜂</title>
+  <style>
+    *{
+      padding: 0;
+      margin: 0;
+    }
+    img{
+      width: 100px;
+      height: 100px;
+      /* margin-top: 50px; */
+      /* margin-left: 80px; */
+      position: absolute;
+      top:0;
+      left:0;
+    }
+  </style>
+</head>
+<body>
+  <img src="https://dss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=482604081,2845377438&fm=26&gp=0.jpg" alt=""/>
+</body>
+<script>
+ var mx,my,ox,oy
+ function e(event){
+   if(!event){
+    event = window.event
+    event.target = event.srcElement
+     event.layerX = event.offsetX;
+      event.layerY = event.offsetY  
+   }
+   event.mx = event.pageX || event.clientX + document.body.scrollLeft
+   event.my = event.pageY || event.clientY + document.body.scrollTop
+   return event
+ }
+ function move(event){
+   event = e(event)
+   o.style.left = event.mx - mx + ox + "px"
+   o.style.top = event.my - my + oy + "px"
+   console.log("move事件",event,event.mx,event.my)
+ }
+ function stop(){
+   o = document.onmousemove = document.onmouseup = null
+ }
+ document.onmousedown = function (event) {
+   event = e(event)
+   o = event.target
+   mx = event.mx
+   my = event.my
+   ox = parseInt(o.offsetLeft)
+   oy = parseInt(o.offsetTop)
+   console.log("down事件",ox,oy,mx,my)
+   document.onmousemove = move
+   document.onmouseup = stop
+ }
+// var mx,my,ox,oy
+//   //目标对象兼容
+//   function e(event){
+//     if(!event){
+//       event = window.event
+//       event.target = event.srcElement
+//       event.layerX = event.offsetX;
+//       event.layerY = event.offsetY
+//     }
+//     //鼠标指针x轴距离
+//     event.mx = event.pageX || event.clientX + document.body.scrollLeft
+//     //鼠标指针y轴距离
+//     event.my = event.pageY || event.clientY + document.body.scrollTop
+//     return event
+//   }
+//   function move(event){
+//     event = e(event)
+//     o.style.left = event.mx - mx + ox + "px"
+//     o.style.top = event.my - my + oy + "px"
+//   }
+//   function stop(){
+//     o = document.onmousemove = document.onmouseup = null
+//   }
+//   document.onmousedown = function(event){
+//     console.log(event.target)
+//     var event = e(event)
+//     o = event.target
+//     //记录下当前元素的位置和鼠标位置
+//     ox = parseInt(o.offsetLeft)
+//     oy = parseInt(o.offsetTop)
+//     mx = event.mx
+//     my = event.my
+//     document.onmousemove = move
+//     document.onmouseup = stop
+//   }
+</script>
+</html>
