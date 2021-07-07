@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="style/index.css">
+    <link rel="stylesheet" href="style/font-awesome-4.7.0/css/font-awesome.min.css">
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="name" v-if='isShow'>
+        <!-- <h2>请输入你的昵称</h2> -->
+        <input @keyup.enter='handleClick' type="text" id="name" placeholder="请输入昵称..." autocomplete="off"
+               v-model='username'>
+        <button id="nameBtn" @click='handleClick'>确 定</button>
+      </div>
+      <div class="main" :class='{shaking:isShake}'>
+        <div class="header">
+          <img src="image/logo.jpg">
+          ❤️聊天室
+        </div>
+        <div id="container">
+          <div class="conversation">
+            <ul id="messages">
+              <li v-for='(user,index) in userSystem' :class='user.side'>
+                <div v-if='user.isUser'>
+                  <img :src="user.img" alt="">
+                  <div>
+                    <span>{{user.name}}</span>
+                    <p :style="{color: user.color}" v-html='user.msg'>
+                    </p>
+                  </div>
+                </div>
+                <p class='system' v-else>
+                  <span>{{nowDate}}</span><br />
+                  <span v-if='user.status'>{{user.name}}{{user.status}}了聊天室</span>
+                  <span v-else>{{user.name}}发送了一个窗口抖动</span>
+                </p>
+
+              </li>
+            </ul>
+            <form action="">
+              <div class="edit">
+                <input type="color" id="color" v-model='color'>
+                <i title="自定义字体颜色" id="font" class="fa fa-font">
+                </i><i @click='handleSelectEmoji' @dblclick='handleDoubleSelectEmoji' title="双击取消选择" class="fa fa-smile-o" id="smile">
+                </i><i @click='handleShake' title="单击页面震动" id="shake" class="fa fa-bolt">
+                </i>
+                <input type="file" id="file">
+                <i class="fa fa-picture-o" id="img"></i>
+                <div class="selectBox" v-show='isEmojiShow'>
+                  <div class="smile" id="smileDiv">
+                    <p>经典表情</p>
+                    <ul class="emoji">
+                      <li v-for='(emojiSrc,i) in emojis' :id='i' :key='i'>
+                        <img :src="emojiSrc" :alt="i+1" @click='handleEmojiImg(i+1)'>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <!-- autocomplete禁用自动完成功能 -->
+              <textarea id="m" v-model='msgVal' autofocus @keyup.enter='handleSendMsg'></textarea>
+              <button class="btn rBtn" id="sub" @click='handleSendMsg'>发送</button>
+              <button class="btn" id="clear" @click='handleLogout'>关闭</button>
+            </form>
+          </div>
+          <div class="contacts">
+            <h1>在线人员(<span id="num">{{userInfo.length}}</span>)</h1>
+            <ul id="users">
+              <li v-for='(user,index) in userInfo'>
+                <img :src="user.img" alt="">
+                <span>{{user.username}}</span>
+              </li>
+            </ul>
+            <p v-if='userInfo.length==0'>当前无人在线哟~</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.bootcss.com/socket.io/2.2.0/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+    <script src='./client.js'></script>
+  </body>
+
+</html>

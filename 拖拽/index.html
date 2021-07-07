@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #src > * {
+        float: left;
+    }
+    #src img{
+        width: 100px;
+        height: 100px;
+        border: thin solid black;
+        margin: 0 15px;
+    }
+    #target{
+        width: 102px;
+        height: 102px;
+        border: thin solid black;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #target p{
+        margin: 0;
+        text-align: center;
+    }
+    #target img{
+        border: none;
+        margin: 0;
+    }
+    img.dragged{
+        background-color: darkcyan;
+        opacity: .5;
+    }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance:none
+    }
+    input[type="number"]{
+      -moz-appearance:textfield;
+    }
+  </style>
+</head>
+<body>
+  
+  <div id="src">
+    <!-- draggable属性可以不设置，默认值是auto，默认所有元素都可拖动 -->
+    <img src="./img/apple.jpg" id="apple" alt="">
+    <img src="./img/banana.jpg" id="banana" alt="">
+    <img src="./img/cherry.jpg" id="cherry" alt="">
+    <div id="target" draggable="false">
+        <span>Drop Here</span>
+    </div>
+    <div>
+      <input type="number" placeholder="请输入">
+    </div>
+  </div>
+  <script>
+    /**
+     * 拖拽四个事件：
+     * dragstart:开始拖动触发
+     * drag:拖拽时触发
+     * dragend:拖拽结束时触发（鼠标松开）
+     * 
+     * 拖拽目标进入释放区四个事件：
+     * dragenter:进入释放区
+     * dragover:在释放区移动触发
+     * drapleave:离开释放区触发
+     * drop:在释放区内松开鼠标时触发
+    */
+   let src = document.querySelector("#src")
+   let msg = document.querySelector("#target span")
+   let target = document.querySelector("#target")
+   let dragged = null//拖动对象
+   //注册事件
+    src.addEventListener("dragstart",(e)=>{
+      dragged = e.target
+    })
+    //dragend是鼠标松开时触发
+    src.addEventListener("dragend",(e)=>{
+      console.log(e)
+      msg.innerHTML = "Drop Here"
+    })
+    //drop事件表示在目标区内释放
+    //dragenter和dragover的默认行为是拒绝接受任何拖放项目
+    //必须加上阻止默认行为
+    target.addEventListener("dragenter",function(e){
+      msg.innerHTML = e.target.id
+    })
+    target.addEventListener("dragleave",function(e){
+      console.log("鼠标离开释放区")
+      msg.innerHTML = "DROP HERE"
+    })
+    target.addEventListener("dragenter",function(e){
+      e.preventDefault()
+    })
+    target.addEventListener("dragover",function(e){
+      e.preventDefault()
+    })
+    target.addEventListener("drop",function(){
+      console.log(dragged)
+      this.innerHTML = ""
+      msg.innerHTML = ""
+      this.append(dragged.cloneNode(false))
+    })
+   //判断是否在释放区内
+  </script>
+  <script>
+    /**
+     * 拖拽类
+     * 
+    */
+    class XDfile {
+      static defaultOptions = {
+        //文件释放区
+        target:document.body || document.documentElement.body,
+        //单击是否弹出文件对话框
+        clickAddFile:true,
+        //上传文件的路径
+        uploadUrl:"",
+        //文件进入释放区添加的类
+        dragenterCls:"dragged",
+        //是否上传多个文件
+        multiple:true,
+        //限制文件类型
+        accept:"*",
+        //添加文件后的回调函数,参数时添加的文件列表
+        addFiles:function(){},
+        //上传操作完成后的回调函数
+        uploaded:function(){}
+      }
+      constructor(options){
+        //合并配置项
+        this.options = Object.assign(defaultOptions,options)
+        this.init()
+      }
+      init(){
+        this.fileLists = []
+        //添加input控件实现点击上传文件
+        if(this.options.clickAddFile){
+          this.file = document.createElement("input")
+          this.file.type = "file"
+          this.file.accept = this.options.accept
+          this.file.multiple = this.options.multiple
+          this.file.multiple = this.options.multiple
+          this.options.target.appendChild(this.file)
+          //点击拖拽区域相当于input控件被触发
+          this.options.target.addEventListener("click",()=>{
+            this.file.click()
+          })
+          this.file.addEventListener("change",function(e){
+            this.options.autoUpload && this.upload(e.target.files)
+          })
+        }
+        //拖拽上传
+
+      }
+      upload(files){
+        const task = []
+        for(const file of files){
+          const data = new FormData()
+          data.append("file",file)
+          data.append('model', 'user')
+            data.append('project', 'mos')
+            data.append('user', 'admin')
+            tasks.push(post(this.options.uploadUrl, data))
+        }
+      }
+    }
+
+
+  </script>
+</body>
+</html>
