@@ -7,6 +7,7 @@ app.use(express.urlencoded({extended:false}))
 
 const router = express.Router()
 
+const socket = require("socket")
 
 app.use((req,res,next)=>{
   res.header("Access-Control-Allow-Origin","*")
